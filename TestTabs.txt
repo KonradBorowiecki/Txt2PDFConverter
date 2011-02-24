@@ -1,0 +1,13 @@
+					result = kontrahNazwa;
+				}
+			}
+			else
+			{
+				Record r = w.getRekord();
+				result = r.getTypedValue(vFN);
+			}
+			if(result instanceof String)
+                            result = ((String)result).trim();
+		}
+            return result;
+	}

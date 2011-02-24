@@ -1,0 +1,64 @@
+package kasa.modeleTabel.raportWydruk;
+
+import java.util.List;
+import kasa.modeleTabel.DBFTableModel;
+import kasa.powitanie.glowneMenu.tworzenieRaportowKasowych.Wpis;
+import kasa.stale.KasaStale;
+import nl.knaw.dans.common.dbflib.Record;
+
+/**
+ *
+ * @author Konrad Borowiecki
+ */
+public class RaportWydrukDBFTableModel extends DBFTableModel
+{
+	private static final long serialVersionUID = 1L;
+//	public RaportWydrukDBFTableModel(String nazwaPlikuDBF, String charsetName)
+//	{
+//		super(nazwaPlikuDBF, charsetName);
+//	}
+	public RaportWydrukDBFTableModel(String nazwaPlikuDBF, String charsetName,
+			List<String> nazwyWidocznychPol, List<String> nazwyKolumn)
+	{
+		super(nazwaPlikuDBF, charsetName, nazwyWidocznychPol, nazwyKolumn);
+	}
+
+	@Override
+	public Object getValueAt(int row, int col)
+	{
+		Object result = null;
+		if(!dane.isEmpty())
+		{
+			Wpis w = dane.get(row);
+			String vFN = nazwyWidocznychPol.get(col);//widocznePola.get(col).getName();
+			if(vFN.equals(LICZBA_PORZADKOWA))
+				result = w.getLiczbaPozadkowa();
+			else if(vFN.equals("KONTRAH"))
+			{
+				//zmieni tylko na nazwe kontrahenta
+				String kontrahNazwaIAdres = w.getWartoscPolaJakoString("KONTRAH");
+				String separatorAdresu = KasaStale.DB_KASA_POLE_KONTRAH_SEPARATOR;
+				String kontrahNazwa = kontrahNazwaIAdres;
+				String adres = "";
+				int idx = kontrahNazwaIAdres.indexOf(separatorAdresu);
+				if(idx != -1)
+				{
+					kontrahNazwa = kontrahNazwaIAdres.substring(0, idx).trim();
+					adres = kontrahNazwaIAdres.substring(idx, kontrahNazwaIAdres.length()).trim();
+			//		System.out.println("kontrahNazwaIAdres=" + kontrahNazwaIAdres + ";\nkontrahNazwa=" + kontrahNazwa + ";\nadres=" + adres + ";");
+					result = kontrahNazwa;
+				}
+			}
+			else
+			{
+				Record r = w.getRekord();
+				result = r.getTypedValue(vFN);
+				
+			}
+			if(result instanceof String)
+				result = ((String)result).trim();
+		}
+		return result;
+	}
+
+}
