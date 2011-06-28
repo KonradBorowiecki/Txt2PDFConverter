@@ -1,12 +1,12 @@
 package txt2PDFConverter;
 
 /**
- * This interface represent functionality of a panel where user can set/get
+ * This interface represent functionality of allowing a user to set/get
  * the name of file used as an input for some operations and the name of file
  * where the operations result will be stored.
  * @author Konrad Borowiecki
  */
-public interface IFileSelectionPanel
+public interface IFileSelector
 {
     /** Retrieves the name of input file.*/
     public String getInputFileName();
