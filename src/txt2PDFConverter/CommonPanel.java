@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -82,6 +83,14 @@ public class CommonPanel extends JPanel {
 	private JFrame ownerFrame;
 
 	public CommonPanel(JFrame ownerFrame, IFileSelector fileSelectionPanel) {
+//		try {
+//			FileHandler fh = new FileHandler("log.txt");
+//			Logger.getLogger(CommonPanel.class.getName()).addHandler(fh);
+//		}catch(IOException ex) {
+//			Logger.getLogger(CommonPanel.class.getName()).log(Level.SEVERE, null, ex);
+//		}catch(SecurityException ex) {
+//			Logger.getLogger(CommonPanel.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		this.ownerFrame = ownerFrame;
 		this.fileSelectionPanel = fileSelectionPanel;
 		this.fontSizeTF = new JTextField(4);
@@ -188,24 +197,30 @@ public class CommonPanel extends JPanel {
 		};//, "fonts/lucon.ttf"};
 		//load font files from the fonts folder
 		String fontFolder = "fonts";
-		String[] fontFiles = new String[0];
+		String[] fontFileNames = new String[0];
+//		Logger.getLogger(CommonPanel.class.getName()).log(Level.INFO,
+//				"ownerFrame must be instanceof Txt2PDFConverterIN is it?="
+//				+(ownerFrame instanceof Txt2PDFConverterIN)
+//				+"; ownerFrame.getClass().getName()="+ownerFrame.getClass().getName());
 		if(ownerFrame instanceof Txt2PDFConverterIN)
 			try {
-				fontFiles = getResourceListing(this.getClass(), fontFolder);
+				fontFileNames = getResourceListing(this.getClass(), fontFolder+"/");
 			}catch(Exception ex) {
 				//ignore, it could happen when fonts folder doesn't exist, it does 
 				// happen when debugging since the folder doesn't exist.
 				//But the folder always is packed in the compact(IN) version of the program.
 			}
 		else {
-			fontFiles = new File(fontFolder).list();
+			fontFileNames = new File(fontFolder).list();
 		}
+//		Logger.getLogger(CommonPanel.class.getName()).log(Level.INFO,
+//				"fontFileNames=" + Arrays.toString(fontFileNames));
 		int initialFontsSize = fonts.length;
-		if(fontFiles.length > 0) {
-			int newFontsSize = initialFontsSize + fontFiles.length;
+		if(fontFileNames.length > 0) {
+			int newFontsSize = initialFontsSize + fontFileNames.length;
 			fonts = Arrays.copyOf(fonts, newFontsSize);
 			for(int i = initialFontsSize; i < newFontsSize; i++)
-				fonts[i] = fontFolder + "/" + fontFiles[i - initialFontsSize];
+				fonts[i] = fontFolder + "/" + fontFileNames[i - initialFontsSize];
 		}
 		this.fontCB = new JComboBox(fonts);
 		fontCB.setBorder(BorderFactory.createEtchedBorder());
@@ -309,10 +324,9 @@ public class CommonPanel extends JPanel {
 			throws URISyntaxException, IOException {
 		URL dirURL = clazz.getClassLoader().getResource(path);
 		if(dirURL != null && dirURL.getProtocol().equals("file")) {
-			/* A file path: easy enough */
+		/* A file path: easy enough */
 			return new File(dirURL.toURI()).list();
 		}
-
 		if(dirURL == null) {
 			/* 
 			 * In case of a jar file, we can't actually find a directory.
@@ -321,12 +335,10 @@ public class CommonPanel extends JPanel {
 			String me = clazz.getName().replace(".", "/") + ".class";
 			dirURL = clazz.getClassLoader().getResource(me);
 		}
-
 		if(dirURL.getProtocol().equals("jar")) {
 			/* A JAR path */
 			String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
 			JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
-
 			Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
 			Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory		
 			while(entries.hasMoreElements()) {

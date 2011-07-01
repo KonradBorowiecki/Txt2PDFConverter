@@ -120,7 +120,7 @@
     </target>
     
 
-     <target name="package-for-store" depends="jar">
+    <target name="package-for-store" depends="jar">
 
         <!-- Change the value of this property to be the name of your JAR,
              minus the .jar extension. It should not have spaces.
@@ -146,14 +146,19 @@
                 <include name="fonts/"/>
             </zipfileset>
             
-            <manifest>
+<!--            <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>-->
+            <manifest>
+                <attribute name="Main-Class" 
+                       value="txt2PDFConverter.in.Txt2PDFConverterIN"/>
             </manifest>
-        </jar>
+        </jar>   
+ 
 
         <zip destfile="${store.jar}">
             <zipfileset src="${store.dir}/temp_final.jar"
-            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+                 excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
         </zip>
 
         <delete file="${store.dir}/temp_final.jar"/>

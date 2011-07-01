@@ -3,9 +3,9 @@ package utility;
 import java.io.*;
 import java.nio.channels.*;
 
-public class FileOperations {
+public class FileOps {
 	/** Required to make sure it is not instantiated. */
-	private FileOperations() {
+	private FileOps() {
 	}
 
 	public static void copyFile(File in, File out) throws IOException {
@@ -62,6 +62,6 @@ public class FileOperations {
 	}
 
 	public static void main(String args[]) throws IOException {
-		FileOperations.copyFile(new File(args[0]), new File(args[1]));
+		FileOps.copyFile(new File(args[0]), new File(args[1]));
 	}
 }

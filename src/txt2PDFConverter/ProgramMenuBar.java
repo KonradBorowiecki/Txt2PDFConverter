@@ -13,7 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import txt2PDFConverter.out.Txt2PDFConverterOUT;
-import utility.FileOperations;
+import utility.FileOps;
 
 /**
  * The menu used by the program.
@@ -58,7 +58,7 @@ public class ProgramMenuBar extends JMenuBar {
 					File saveFile = new File(fontsFolder.getPath() + "/" + selectedFile.getName());
 					if(!saveFile.exists()) {
 						System.out.println("saveFile.getPath()=" + saveFile.getPath());
-						FileOperations.copyFile(selectedFile, saveFile);
+						FileOps.copyFile(selectedFile, saveFile);
 						JOptionPane.showMessageDialog(ownerFrame, 
 								"<html><p>The font file was successfully copied</p>");
 					}
